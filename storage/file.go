@@ -173,5 +173,11 @@ func (fst *fileStorageTorrent) WriteAt(p []byte, off int64) (n int, err error) {
 }
 
 func (fst *fileStorageTorrent) fileInfoName(fi metainfo.FileInfo) string {
-	return filepath.Join(append([]string{fst.baseDir, fst.info.Name}, fi.Path...)...)
+	if len(fst.info.Files) == 0 {
+		//single file torrent
+		return filepath.Join(append([]string{fst.baseDir, fst.info.Hash().HexString()}, fst.info.Name)...)
+	} else {
+		//multi file torrent ,rename to info hash
+		return filepath.Join(append([]string{fst.baseDir, fst.info.Hash().HexString()}, fi.Path...)...)
+	}
 }
